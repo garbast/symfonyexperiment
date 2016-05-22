@@ -1,0 +1,46 @@
+#!/usr/bin/env php
+<?php
+namespace Evoweb\CurseDownloader;
+
+$GLOBALS['basepath'] = __DIR__;
+require_once(__DIR__ . '/vendor/autoload.php');
+
+class Curse extends \Symfony\Component\Console\Application
+{
+    /**
+     * Gets the default commands that should always be available.
+     *
+     * @return array An array of default Command instances
+     */
+    protected function getDefaultCommands()
+    {
+        // Keep the core default commands to have the HelpCommand
+        // which is used when using the --help option
+        $defaultCommands = parent::getDefaultCommands();
+
+        $defaultCommands[] = new \Evoweb\CurseDownloader\Utility\Download();
+        $defaultCommands[] = new \Evoweb\CurseDownloader\Utility\Update();
+
+        return $defaultCommands;
+    }
+
+    /**
+     * Overridden so that the application doesn't expect the command
+     * name to be the first argument.
+     */
+    public function getDefinition()
+    {
+        $inputDefinition = parent::getDefinition();
+        // clear out the normal first argument, which is the command name
+        $inputDefinition->setArguments();
+
+        return $inputDefinition;
+    }
+}
+
+call_user_func(
+    function () {
+        $application = new Curse();
+        $application->run();
+    }
+);

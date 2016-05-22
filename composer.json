@@ -1,0 +1,21 @@
+{
+  "name": "evoweb/curse-downloader",
+  "description": "Download curse minecraft modpacks",
+  "homepage": "http://www.evoweb.de/",
+  "license": "GPL-2.0+",
+  "authors": [
+    {
+      "name": "Sebastian Fischer",
+      "role": "Developer"
+    }
+  ],
+  "require": {
+    "guzzlehttp/guzzle": "^6.2.0",
+    "symfony/console": "~2.7.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "Evoweb\\CurseDownloader\\": "Classes/"
+    }
+  }
+}
