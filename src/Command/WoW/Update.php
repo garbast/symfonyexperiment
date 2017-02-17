@@ -1,5 +1,5 @@
 <?php
-namespace Evoweb\CurseDownloader\Utility;
+namespace Evoweb\CurseDownloader\Command\WoW;
 
 use Symfony\Component\Console\Input\InputArgument;
 
@@ -12,7 +12,7 @@ class Update extends \Symfony\Component\Console\Command\Command
     {
         $this->ignoreValidationErrors();
 
-        $this->setName('update')
+        $this->setName('wow:update')
             ->setDefinition(
                 array(
                     new InputArgument('command_name', InputArgument::OPTIONAL, 'The command name', 'update'),

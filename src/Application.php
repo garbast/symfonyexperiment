@@ -1,11 +1,7 @@
-#!/usr/bin/env php
 <?php
 namespace Evoweb\CurseDownloader;
 
-$GLOBALS['basepath'] = __DIR__;
-require_once(__DIR__ . '/vendor/autoload.php');
-
-class Curse extends \Symfony\Component\Console\Application
+class Application extends \Symfony\Component\Console\Application
 {
     /**
      * Gets the default commands that should always be available.
@@ -18,8 +14,10 @@ class Curse extends \Symfony\Component\Console\Application
         // which is used when using the --help option
         $defaultCommands = parent::getDefaultCommands();
 
-        $defaultCommands[] = new \Evoweb\CurseDownloader\Utility\Download();
-        $defaultCommands[] = new \Evoweb\CurseDownloader\Utility\Update();
+        $defaultCommands[] = new \Evoweb\CurseDownloader\Command\Minecraft\Download();
+        $defaultCommands[] = new \Evoweb\CurseDownloader\Command\Minecraft\Update();
+        $defaultCommands[] = new \Evoweb\CurseDownloader\Command\WoW\Download();
+        $defaultCommands[] = new \Evoweb\CurseDownloader\Command\WoW\Update();
 
         return $defaultCommands;
     }
@@ -37,10 +35,3 @@ class Curse extends \Symfony\Component\Console\Application
         return $inputDefinition;
     }
 }
-
-call_user_func(
-    function () {
-        $application = new Curse();
-        $application->run();
-    }
-);

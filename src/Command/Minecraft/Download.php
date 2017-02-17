@@ -1,5 +1,5 @@
 <?php
-namespace Evoweb\CurseDownloader\Utility;
+namespace Evoweb\CurseDownloader\Command\Minecraft;
 
 use Psr\Http\Message\ResponseInterface;
 use Symfony\Component\Console\Input\InputArgument;
@@ -73,7 +73,7 @@ class Download extends \Symfony\Component\Console\Command\Command
     {
         parent::__construct($name);
         $this->downloaderPath = rtrim($GLOBALS['basepath'], '/') . '/';
-        $this->cachePath = $this->downloaderPath . 'cache/';
+        $this->cachePath = $this->downloaderPath . 'cache/Minecraft/';
         $this->makeFolder($this->cachePath);
     }
 
@@ -93,10 +93,10 @@ class Download extends \Symfony\Component\Console\Command\Command
      */
     protected function configure()
     {
-        $this->setName('download')
+        $this->setName('minecraft:download')
             ->setDefinition(
                 array(
-                    new InputArgument('command_name', InputArgument::OPTIONAL, 'The command name', 'download'),
+                    new InputArgument('command_name', InputArgument::REQUIRED, 'The command name'),
                     new InputArgument('manifest', InputArgument::OPTIONAL, 'Path to manifest.json'),
                 )
             )
@@ -128,14 +128,13 @@ class Download extends \Symfony\Component\Console\Command\Command
     {
         if (file_exists(getcwd() . '/manifest.json')) {
             $this->filePath = getcwd() . '/manifest.json';
-        } elseif ($input->hasArgument('manifest') && file_exists($input->getArgument('manifest')) && is_file(
-                $input->getArgument('manifest')
-            )
+        } elseif ($input->hasArgument('manifest')
+            && file_exists($input->getArgument('manifest'))
+            && is_file($input->getArgument('manifest'))
         ) {
             $this->filePath = $input->getArgument('manifest');
-        } elseif ($input->hasArgument('manifest') && file_exists(
-                rtrim($input->getArgument('manifest'), '/') . '/manifest.json'
-            )
+        } elseif ($input->hasArgument('manifest')
+            && file_exists(rtrim($input->getArgument('manifest'), '/') . '/manifest.json')
         ) {
             $this->filePath = rtrim($input->getArgument('manifest'), '/') . '/manifest.json';
         }
@@ -178,17 +177,18 @@ class Download extends \Symfony\Component\Console\Command\Command
             );
             $patchConfig->mcVersion = $this->manifest->minecraft->version;
             $patchConfig->version = str_replace(
-                    'forge-',
-                    '',
-                    $this->manifest->minecraft->modLoaders[0]->id
-                ) . '-' . $patchConfig->mcVersion;
+                'forge-',
+                '',
+                $this->manifest->minecraft->modLoaders[0]->id
+            ) . '-' . $patchConfig->mcVersion;
 
             foreach ($patchConfig->{'+libraries'} as &$lib) {
                 if (strpos($lib->name, ':forge:') === false) {
                     continue;
                 }
 
-                $lib->name = 'net.minecraftforge:forge:' . $patchConfig->mcVersion . '-' . $patchConfig->version . ':universal';
+                $lib->name = 'net.minecraftforge:forge:' . $patchConfig->mcVersion .
+                    '-' . $patchConfig->version . ':universal';
             }
 
             $this->makeFolder($this->modPackPath . 'patches');
