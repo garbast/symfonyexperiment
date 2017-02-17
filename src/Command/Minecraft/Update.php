@@ -14,10 +14,9 @@ class Update extends \Symfony\Component\Console\Command\Command
 
         $this->setName('minecraft:update')
             ->setDefinition(
-                array(
-                    new InputArgument('command_name', InputArgument::OPTIONAL, 'The command name', 'update'),
+                [
                     new InputArgument('manifest', InputArgument::OPTIONAL, 'Path to manifest.json'),
-                )
+                ]
             )
             ->setDescription('Import mod pack based on manifest.json');
     }

@@ -11,17 +11,38 @@ class Download extends \Symfony\Component\Console\Command\Command
 
     protected $downloaderPath;
 
-    protected $gamePath = '/home/sebastian/.wow/drive_c/Program Files (x86)/World of Warcraft/';
+    /**
+     * @var string
+     */
+    protected $gamePath = '~/.wine/drive_c/Program Files (x86)/World of Warcraft/';
 
     /**
-     * Constructor.
-     *
-     * @param string|null $name The name of the command; passing null means it must be set in configure()
-     * @throws \LogicException When the command name is empty
+     * @return void
      */
-    public function __construct($name = null)
+    protected function configure()
     {
-        parent::__construct($name);
+        $this->ignoreValidationErrors();
+
+        $this->setName('wow:download')
+            ->setDefinition(
+                [
+                    new InputArgument('manifest', InputArgument::OPTIONAL, 'Path to manifest.json'),
+                ]
+            )
+            ->setDescription('Download addon');
+    }
+
+    /**
+     * Initializes the command just after the input has been validated.
+     *
+     * This is mainly useful when a lot of commands extends one main command
+     * where some things need to be initialized based on the input arguments and options.
+     *
+     * @param InputInterface  $input  An InputInterface instance
+     * @param OutputInterface $output An OutputInterface instance
+     */
+    protected function initialize(InputInterface $input, OutputInterface $output)
+    {
         $this->downloaderPath = rtrim($GLOBALS['basepath'], '/') . '/';
         $this->cachePath = $this->downloaderPath . 'cache/WoW/';
         $this->makeFolder($this->cachePath);
@@ -36,23 +57,6 @@ class Download extends \Symfony\Component\Console\Command\Command
         if (!file_exists($path)) {
             mkdir($path, 0777, true);
         }
-    }
-
-    /**
-     * @return void
-     */
-    protected function configure()
-    {
-        $this->ignoreValidationErrors();
-
-        $this->setName('wow:download')
-            ->setDefinition(
-                array(
-                    new InputArgument('command_name', InputArgument::OPTIONAL, 'The command name', 'update'),
-                    new InputArgument('manifest', InputArgument::OPTIONAL, 'Path to manifest.json'),
-                )
-            )
-            ->setDescription('Import mod pack based on manifest.json');
     }
 
     public function execute(InputInterface $input, OutputInterface $output)

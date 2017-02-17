@@ -95,10 +95,9 @@ class Download extends \Symfony\Component\Console\Command\Command
     {
         $this->setName('minecraft:download')
             ->setDefinition(
-                array(
-                    new InputArgument('command_name', InputArgument::REQUIRED, 'The command name'),
+                [
                     new InputArgument('manifest', InputArgument::OPTIONAL, 'Path to manifest.json'),
-                )
+                ]
             )
             ->setDescription('Import mod pack based on manifest.json');
     }

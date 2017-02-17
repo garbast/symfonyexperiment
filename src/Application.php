@@ -21,17 +21,4 @@ class Application extends \Symfony\Component\Console\Application
 
         return $defaultCommands;
     }
-
-    /**
-     * Overridden so that the application doesn't expect the command
-     * name to be the first argument.
-     */
-    public function getDefinition()
-    {
-        $inputDefinition = parent::getDefinition();
-        // clear out the normal first argument, which is the command name
-        $inputDefinition->setArguments();
-
-        return $inputDefinition;
-    }
 }
