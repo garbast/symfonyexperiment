@@ -3,8 +3,25 @@ namespace Evoweb\CurseDownloader\Command\Minecraft;
 
 use Symfony\Component\Console\Input\InputArgument;
 
-class Update extends \Symfony\Component\Console\Command\Command
+class UpdateCommand extends \Symfony\Component\Console\Command\Command
 {
+    /**
+     * @var array
+     */
+    protected $configuration;
+
+    /**
+     * DownloadCommmand constructor.
+     *
+     * @param array $configuration
+     */
+    public function __construct($configuration)
+    {
+        parent::__construct();
+
+        $this->configuration = $configuration;
+    }
+
     /**
      * @return void
      */

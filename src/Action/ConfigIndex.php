@@ -35,8 +35,7 @@ class ConfigIndex
 
     public function __invoke(Request $request)
     {
-        $body = $this->twig->render(':Templates/Page:Index.html.twig', [
-        ]);
+        $body = $this->twig->render(':Templates/Page:Index.html.twig', []);
 
         return new Response($body, Response::HTTP_OK);
     }

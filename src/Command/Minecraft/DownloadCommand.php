@@ -8,7 +8,7 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class Download extends \Symfony\Component\Console\Command\Command
+class DownloadCommand extends \Symfony\Component\Console\Command\Command
 {
     /**
      * Manifest content of curse minecraft mod packs
@@ -69,6 +69,23 @@ class Download extends \Symfony\Component\Console\Command\Command
     protected $cache;
 
     /**
+     * @var array
+     */
+    protected $configuration;
+
+    /**
+     * DownloadCommmand constructor.
+     *
+     * @param array $configuration
+     */
+    public function __construct($configuration)
+    {
+        parent::__construct();
+
+        $this->configuration = $configuration;
+    }
+
+    /**
      * @return void
      */
     protected function configure()
@@ -93,7 +110,7 @@ class Download extends \Symfony\Component\Console\Command\Command
      */
     protected function initialize(InputInterface $input, OutputInterface $output)
     {
-        /** @var \Evoweb\CurseDownloader\Application $application */
+        /** @var \Symfony\Bundle\FrameworkBundle\Console\Application $application */
         $application = $this->getApplication();
 
         $this->downloaderPath = $application->path;

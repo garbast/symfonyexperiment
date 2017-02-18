@@ -1,0 +1,3 @@
+parameters:
+  wow:
+    path: "~/.wine/drive_c/Program Files (x86)/World of Warcraft/"

@@ -4,7 +4,7 @@ namespace Evoweb\CurseDownloader\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class Config extends \Symfony\Component\Console\Command\Command
+class ConfigCommand extends \Symfony\Component\Console\Command\Command
 {
     /**
      * @return void

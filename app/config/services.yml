@@ -1,1 +1,33 @@
 services:
+  curse-config:
+    class: Evoweb\CurseDownloader\Command\ConfigCommand
+    tags:
+      - { name: console.command }
+
+  curse-minecraft-download:
+    class: Evoweb\CurseDownloader\Command\Minecraft\DownloadCommand
+    arguments:
+      configuration: "%wow%"
+    tags:
+      - { name: console.command }
+
+  curse-minecraft-update:
+    class: Evoweb\CurseDownloader\Command\Minecraft\UpdateCommand
+    arguments:
+      configuration: "%wow%"
+    tags:
+      - { name: console.command }
+
+  curse-wow-download:
+    class: Evoweb\CurseDownloader\Command\WoW\DownloadCommmand
+    arguments:
+      configuration: "%wow%"
+    tags:
+      - { name: console.command }
+
+  curse-wow-update:
+    class: Evoweb\CurseDownloader\Command\WoW\UpdateCommand
+    arguments:
+      configuration: "%wow%"
+    tags:
+      - { name: console.command }
