@@ -12,7 +12,6 @@
   "require": {
     "symfony/framework-standard-edition": "@stable",
     "dunglas/action-bundle": "^0.4",
-    "symfony/cache": "~3.2",
     "guzzlehttp/guzzle": "^6.2"
   },
   "autoload": {

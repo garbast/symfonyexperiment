@@ -1,0 +1,10 @@
+index:
+  path: /
+  defaults:
+    _controller: FrameworkBundle:Redirect:urlRedirect
+    path: /en
+    permanent: true
+
+index_show:
+  path:       /{_locale}
+  defaults:   { _controller: 'Evoweb\CurseDownloader\Action\ConfigIndex' }

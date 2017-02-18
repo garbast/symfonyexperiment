@@ -11,9 +11,7 @@ class Config extends \Symfony\Component\Console\Command\Command
      */
     protected function configure()
     {
-        $this->ignoreValidationErrors();
-
-        $this->setName('config')
+        $this->setName('curse:config')
             ->setDescription('Start internal webserver and open browser');
     }
 
@@ -24,9 +22,11 @@ class Config extends \Symfony\Component\Console\Command\Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        /** @var \Evoweb\CurseDownloader\Application $application */
+        /** @var \Symfony\Bundle\FrameworkBundle\Console\Application $application */
         $application = $this->getApplication();
+        /** @var \Evoweb\CurseDownloader\AppKernel $kernel */
+        $kernel = $application->getKernel();
         $host = '127.0.0.1:9876';
-        exec('sensible-browser ' . $host . ' && php -S ' . $host . ' -t ' . $application->path . '/Web/');
+        exec('sensible-browser ' . $host . ' && php -S ' . $host . ' -t ' . $kernel->getWebDir());
     }
 }

@@ -23,7 +23,7 @@ class Download extends \Symfony\Component\Console\Command\Command
      */
     protected function configure()
     {
-        $this->setName('wow:download')
+        $this->setName('curse:wow:download')
             ->setDefinition(
                 [
                     new InputArgument('manifest', InputArgument::OPTIONAL, 'Path to manifest.json'),

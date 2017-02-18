@@ -12,7 +12,7 @@ class Update extends \Symfony\Component\Console\Command\Command
     {
         $this->ignoreValidationErrors();
 
-        $this->setName('wow:update')
+        $this->setName('curse:wow:update')
             ->setDefinition(
                 [
                     new InputArgument('manifest', InputArgument::OPTIONAL, 'Path to manifest.json'),

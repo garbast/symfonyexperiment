@@ -73,7 +73,7 @@ class Download extends \Symfony\Component\Console\Command\Command
      */
     protected function configure()
     {
-        $this->setName('minecraft:download')
+        $this->setName('curse:minecraft:download')
             ->setDefinition(
                 [
                     new InputArgument('manifest', InputArgument::OPTIONAL, 'Path to manifest.json'),
