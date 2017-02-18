@@ -2,6 +2,8 @@
 namespace Evoweb\CurseDownloader\Command\Minecraft;
 
 use Psr\Http\Message\ResponseInterface;
+use Symfony\Component\Cache\Adapter\FilesystemAdapter;
+use Symfony\Component\Cache\CacheItem;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -61,32 +63,10 @@ class Download extends \Symfony\Component\Console\Command\Command
 
     protected $minecraftPath = '';
 
-    protected $cachePath = '';
-
     /**
-     * Constructor.
-     *
-     * @param string|null $name The name of the command; passing null means it must be set in configure()
-     * @throws \LogicException When the command name is empty
+     * @var FilesystemAdapter
      */
-    public function __construct($name = null)
-    {
-        parent::__construct($name);
-        $this->downloaderPath = rtrim($GLOBALS['basepath'], '/') . '/';
-        $this->cachePath = $this->downloaderPath . 'cache/Minecraft/';
-        $this->makeFolder($this->cachePath);
-    }
-
-    /**
-     * @param string $path
-     * @return void
-     */
-    protected function makeFolder($path)
-    {
-        if (!file_exists($path)) {
-            mkdir($path, 0777, true);
-        }
-    }
+    protected $cache;
 
     /**
      * @return void
@@ -100,6 +80,41 @@ class Download extends \Symfony\Component\Console\Command\Command
                 ]
             )
             ->setDescription('Import mod pack based on manifest.json');
+    }
+
+    /**
+     * Initializes the command just after the input has been validated.
+     *
+     * This is mainly useful when a lot of commands extends one main command
+     * where some things need to be initialized based on the input arguments and options.
+     *
+     * @param InputInterface  $input  An InputInterface instance
+     * @param OutputInterface $output An OutputInterface instance
+     */
+    protected function initialize(InputInterface $input, OutputInterface $output)
+    {
+        /** @var \Evoweb\CurseDownloader\Application $application */
+        $application = $this->getApplication();
+
+        $this->downloaderPath = $application->path;
+
+        $this->cache = FilesystemAdapter::createSystemCache(
+            'WoW',
+            0,
+            'nongiven',
+            $application->path . DIRECTORY_SEPARATOR . 'cache'
+        );
+    }
+
+    /**
+     * @param string $path
+     * @return void
+     */
+    protected function makeFolder($path)
+    {
+        if (!file_exists($path)) {
+            mkdir($path, 0777, true);
+        }
     }
 
     /**
@@ -268,12 +283,14 @@ class Download extends \Symfony\Component\Console\Command\Command
 
         $downloadCounter = 1;
         foreach ($this->manifest->files as $mod) {
-            $cacheEntry = $this->cachePath . $mod->projectID . '/' . $mod->fileID . '/';
+            $cacheEntry = $mod->projectID . '/' . $mod->fileID . '/';
 
-            if (!$this->isCacheFileExists($cacheEntry)) {
-                $this->downloadCurseFileToCache($cacheEntry, $mod);
+            if (!$this->cache->hasItem($cacheEntry)) {
+                $result = $this->downloadCurseFile($cacheEntry, $mod);
+                $item = new CacheItem();
+                $this->cache->save($item);
             }
-            $filename = $this->copyFileFromCache($cacheEntry);
+            $filename = $this->cache->getItem($cacheEntry);
 
             $output->writeln(
                 '[' . $downloadCounter . '/' . $modCount . '] '
@@ -319,12 +336,14 @@ class Download extends \Symfony\Component\Console\Command\Command
     /**
      * @param string $cacheEntry
      * @param \stdClass $mod
-     * @return void
+     * @return string
      */
-    protected function downloadCurseFileToCache($cacheEntry, $mod)
+    protected function downloadCurseFile($cacheEntry, $mod)
     {
         $this->makeFolder($cacheEntry);
 
+        $filename = '';
+        $content = '';
         $client = $this->getClient();
         try {
             $projectUrl = $this->getProjectUrl($client, $mod);
@@ -333,9 +352,10 @@ class Download extends \Symfony\Component\Console\Command\Command
 
             /** @var ResponseInterface $response */
             $content = $response->getBody()->getContents();
-            $this->writeContentToFile($cacheEntry . $filename, $content);
         } catch (\Exception $e) {
         }
+
+        return ['filename' => $filename, 'content' => $content];
     }
 
     /**
@@ -433,17 +453,5 @@ class Download extends \Symfony\Component\Console\Command\Command
 
             i += 1
  */
-    }
-
-    /**
-     * @param string $filepath
-     * @param string $content
-     * @return void
-     */
-    protected function writeContentToFile($filepath, $content)
-    {
-        $fileHandle = fopen($filepath, 'w');
-        fwrite($fileHandle, $content);
-        fclose($fileHandle);
     }
 }

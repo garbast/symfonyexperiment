@@ -7,7 +7,6 @@
 
 set_time_limit(0);
 
-$GLOBALS['basepath'] = realpath(__DIR__ . '/../');
 require __DIR__ . '/../vendor/autoload.php';
 
 $input = new \Symfony\Component\Console\Input\ArgvInput();
@@ -18,5 +17,6 @@ if ($debug) {
     \Symfony\Component\Debug\Debug::enable();
 }
 
-$application = new \Evoweb\CurseDownloader\Application();
+$kernel = new \Evoweb\CurseDownloader\AppKernel($env, $debug);
+$application = new \Symfony\Bundle\FrameworkBundle\Console\Application($kernel);
 $application->run($input);

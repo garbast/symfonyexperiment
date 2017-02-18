@@ -1,24 +1,38 @@
 <?php
 namespace Evoweb\CurseDownloader;
 
+use \Evoweb\CurseDownloader\Command;
+
+/**
+ * Class Application
+ *
+ * @package Evoweb\CurseDownloader
+ */
 class Application extends \Symfony\Component\Console\Application
 {
     /**
-     * Gets the default commands that should always be available.
-     *
-     * @return array An array of default Command instances
+     * @var string
      */
-    protected function getDefaultCommands()
+    public $path;
+
+    /**
+     * Constructor.
+     *
+     * @param string $name    The name of the application
+     * @param string $version The version of the application
+     */
+    public function __construct($name = 'UNKNOWN', $version = 'UNKNOWN')
     {
-        // Keep the core default commands to have the HelpCommand
-        // which is used when using the --help option
-        $defaultCommands = parent::getDefaultCommands();
+        $this->path = realpath(__DIR__ . '/../');
 
-        $defaultCommands[] = new \Evoweb\CurseDownloader\Command\Minecraft\Download();
-        $defaultCommands[] = new \Evoweb\CurseDownloader\Command\Minecraft\Update();
-        $defaultCommands[] = new \Evoweb\CurseDownloader\Command\WoW\Download();
-        $defaultCommands[] = new \Evoweb\CurseDownloader\Command\WoW\Update();
+        parent::__construct($name, $version);
 
-        return $defaultCommands;
+        $this->addCommands([
+            new Command\Config(),
+            new Command\Minecraft\Download(),
+            new Command\Minecraft\Update(),
+            new Command\WoW\Download(),
+            new Command\WoW\Update(),
+        ]);
     }
 }

@@ -10,8 +10,10 @@
     }
   ],
   "require": {
-    "symfony/console": "~2.7.0",
-    "guzzlehttp/guzzle": "^6.2.0"
+    "symfony/framework-standard-edition": "@stable",
+    "dunglas/action-bundle": "^0.4",
+    "symfony/cache": "~3.2",
+    "guzzlehttp/guzzle": "^6.2"
   },
   "autoload": {
     "psr-4": {

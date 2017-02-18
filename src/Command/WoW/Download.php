@@ -1,15 +1,17 @@
 <?php
 namespace Evoweb\CurseDownloader\Command\WoW;
 
+use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class Download extends \Symfony\Component\Console\Command\Command
 {
-    protected $cachePath;
-
-    protected $downloaderPath;
+    /**
+     * @var FilesystemAdapter
+     */
+    protected $cache;
 
     /**
      * @var string
@@ -21,8 +23,6 @@ class Download extends \Symfony\Component\Console\Command\Command
      */
     protected function configure()
     {
-        $this->ignoreValidationErrors();
-
         $this->setName('wow:download')
             ->setDefinition(
                 [
@@ -43,20 +43,15 @@ class Download extends \Symfony\Component\Console\Command\Command
      */
     protected function initialize(InputInterface $input, OutputInterface $output)
     {
-        $this->downloaderPath = rtrim($GLOBALS['basepath'], '/') . '/';
-        $this->cachePath = $this->downloaderPath . 'cache/WoW/';
-        $this->makeFolder($this->cachePath);
-    }
+        /** @var \Evoweb\CurseDownloader\Application $application */
+        $application = $this->getApplication();
 
-    /**
-     * @param string $path
-     * @return void
-     */
-    protected function makeFolder($path)
-    {
-        if (!file_exists($path)) {
-            mkdir($path, 0777, true);
-        }
+        $this->cache = FilesystemAdapter::createSystemCache(
+            'WoW',
+            0,
+            'nongiven',
+            $application->path . DIRECTORY_SEPARATOR . 'cache'
+        );
     }
 
     public function execute(InputInterface $input, OutputInterface $output)
