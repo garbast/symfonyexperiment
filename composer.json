@@ -10,12 +10,13 @@
     }
   ],
   "require": {
-    "symfony/framework-standard-edition": "@stable",
+    "symfony/framework-standard-edition": "^3.2",
     "guzzlehttp/guzzle": "^6.2"
   },
   "autoload": {
     "psr-4": {
       "Evoweb\\CurseDownloader\\": "src/"
-    }
+    },
+    "files": [ "app/AppKernel.php" ]
   }
 }
